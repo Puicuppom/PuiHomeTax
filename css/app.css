@@ -345,3 +345,10 @@ th,td{padding:10px 12px}
   #loanView .pagehead{order:-2}
   #savings{order:-1}
 }
+/* ตารางผ่อน: พอดีกว้าง ไม่ต้องเลื่อนซ้ายขวา */
+#schedule{min-width:0;font-size:.92rem}
+#schedule th,#schedule td{padding:10px 10px}
+.tablebox:has(#schedule){overflow-x:hidden}
+.save .small,.save .big{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:640px){#schedule td.c-head::before{content:"งวด ";color:inherit;font-size:inherit}
+  #schedule td.c-head[data-label="ปี"]::before{content:none}}

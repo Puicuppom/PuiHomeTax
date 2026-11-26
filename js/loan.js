@@ -88,6 +88,7 @@
       <dt>ดอกเบี้ยรวม</dt><dd>${fmt(s.totalInt)}</dd>
       <dt>จ่ายทั้งหมด</dt><dd>${fmt(s.totalPaid)}</dd>`;
   }
+  const ym2 = d => `${TH_M[d.getMonth()]} ${String(be(d.getFullYear())).slice(2)}`;
   function renderCompare(base, plan, birth) {
     const R = [["ระยะเวลา", s => dur(s.months)], ["จำนวนงวด", s => fmt0(s.months) + " งวด"], ["ผ่อนหมด", s => monthLabel(s.end)]];
     if (birth) R.push(["อายุตอนผ่อนหมด", s => ageAt(birth, s.end)]);
@@ -106,15 +107,15 @@
     // ยอดคงเหลือปัจจุบัน = หลังงวดสุดท้ายก่อนเดือนนี้ (ตามแผน ผ่อน + โปะ)
     const paidRows = plan.rows.filter(r => r.date.getFullYear() * 12 + r.date.getMonth() < nowM);
     const curBal = paidRows.length ? paidRows[paidRows.length - 1].bal : d.loanAmount;
-    const nowCard = `<div class="save" style="background:var(--primary-soft)"><div class="small">ยอดคงเหลือ ณ ต้น ${TH_M[now.getMonth()]} ${String(be(now.getFullYear())).slice(2)}</div><div class="big" style="color:var(--primary)">${fmt0(curBal)} ฿</div><div class="small muted">จ่ายแล้ว ${fmt0(paidRows.length)} งวด · ตัดต้นไป ${fmt0(d.loanAmount - curBal)}</div></div>`;
-    const leftCard = `<div class="save" style="background:var(--primary-soft)"><div class="small">เหลือเวลาผ่อน</div><div class="big" style="color:var(--primary)">${left ? dur(left) : "ผ่อนหมดแล้ว"}</div><div class="small muted">อีก ${fmt0(left)} งวด · หมด ${monthLabel(plan.end)}</div></div>`;
+    const nowCard = `<div class="save" style="background:var(--primary-soft)"><div class="small">ยอดคงเหลือปัจจุบัน</div><div class="big" style="color:var(--primary)">${fmt0(curBal)} ฿</div><div class="small muted">จ่ายแล้ว ${fmt0(paidRows.length)} งวด</div></div>`;
+    const leftCard = `<div class="save" style="background:var(--primary-soft)"><div class="small">เหลือเวลาผ่อน</div><div class="big" style="color:var(--primary)">${left ? dur(left) : "ผ่อนหมดแล้ว"}</div><div class="small muted">หมด ${ym2(plan.end)}</div></div>`;
     if (base.error) {
-      $("savings").innerHTML = `${nowCard}<div class="save"><div class="small">ถ้าไม่โปะ</div><div class="big" style="color:var(--bad)">ผ่อนไม่หมด</div><div class="small muted">ค่างวดปกติไม่พอจ่ายดอกเบี้ย</div></div>${leftCard}`;
+      $("savings").innerHTML = `${nowCard}<div class="save"><div class="small">ถ้าไม่โปะ</div><div class="big" style="color:var(--bad)">ผ่อนไม่หมด</div><div class="small muted">ค่างวดไม่พอดอกเบี้ย</div></div>${leftCard}`;
     } else {
       const sm = base.months - plan.months, si = base.totalInt - plan.totalInt;
       $("savings").innerHTML = `${nowCard}
-        <div class="save"><div class="small">ประหยัดดอกเบี้ย</div><div class="big">${fmt0(si)} ฿</div><div class="small muted">${base.totalInt ? ((si / base.totalInt) * 100).toFixed(1) : 0}% ของดอกเบี้ย</div></div>
-        <div class="save"><div class="small">ผ่อนหมดเร็วขึ้น</div><div class="big">${dur(sm)}</div><div class="small muted">${monthLabel(base.end)} → ${monthLabel(plan.end)}</div></div>
+        <div class="save"><div class="small">ประหยัดดอกเบี้ย</div><div class="big">${fmt0(si)} ฿</div><div class="small muted">ลดลง ${base.totalInt ? Math.round(si / base.totalInt * 100) : 0}%</div></div>
+        <div class="save"><div class="small">ผ่อนหมดเร็วขึ้น</div><div class="big">${dur(sm)}</div><div class="small muted">จาก ${ym2(base.end)}</div></div>
 ${leftCard}`;
     }
     last = { base: base.error ? null : base, plan };
@@ -165,25 +166,26 @@ ${leftCard}`;
     const rows = all.filter(r => (!fy || r.date.getFullYear() === fy) && (tableMode !== "month" || fm < 0 || r.date.getMonth() === fm));
     // data-label ใช้แสดงเป็นการ์ดบนมือถือ (ดู css .sched)
     const td = (label, v, cls = "num", extra = "") => `<td class="${cls}${extra}" data-label="${label}">${v}</td>`;
+    const hasLump = all.some(r => r.lump > 0);
     let h = "";
     if (tableMode === "year") {
-      h = `<thead><tr><th class="l">ปี พ.ศ.</th><th class="l">ช่วงเดือน</th><th>จ่ายรวม</th><th>ดอกเบี้ย</th><th>ตัดเงินต้น</th><th>โปะก้อน</th><th>คงเหลือ ณ สิ้นงวด</th></tr></thead><tbody>`;
+      h = `<thead><tr><th class="l">ปี</th><th class="l">ช่วงเดือน</th><th>จ่ายรวม</th><th>ดอกเบี้ย</th><th>ตัดเงินต้น</th>${hasLump ? "<th>โปะก้อน</th>" : ""}<th>คงเหลือ</th></tr></thead><tbody>`;
       // แบ่งตามปีปฏิทิน (ม.ค.–ธ.ค.) ให้ตรงกับปีภาษี
       const groups = [];
       rows.forEach(r => { const y = r.date.getFullYear(); if (!groups.length || groups[groups.length - 1].y !== y) groups.push({ y, rows: [] }); groups[groups.length - 1].rows.push(r); });
       groups.forEach(({ y, rows: ch }) => {
         const s = k => ch.reduce((a, r) => a + r[k], 0), lump = s("lump");
         h += `<tr><td class="l c-head" data-label="ปี">${be(y)}</td>
-          <td class="l c-sub" data-label="ช่วง">${monthLabel(ch[0].date)} – ${monthLabel(ch[ch.length - 1].date)} <span class="muted small">(${ch.length} งวด)</span></td>
-          ${td("จ่ายรวม", fmt(s("payment") + lump))}${td("ดอกเบี้ย", fmt(s("interest")))}${td("ตัดเงินต้น", fmt(s("principal") + lump))}
-          ${td("โปะก้อน", lump ? fmt(lump) : "–", "num", lump ? "" : " c-none")}${td("คงเหลือ", fmt(ch[ch.length - 1].bal), "num", " c-key")}</tr>`;
+          <td class="l c-sub" data-label="ช่วง">${ch.length === 12 ? "ทั้งปี" : `${TH_M[ch[0].date.getMonth()]}–${TH_M[ch[ch.length - 1].date.getMonth()]} (${ch.length} งวด)`}</td>
+          ${td("จ่ายรวม", fmt0(s("payment") + lump))}${td("ดอกเบี้ย", fmt0(s("interest")))}${td("ตัดเงินต้น", fmt0(s("principal") + lump))}
+          ${hasLump ? td("โปะก้อน", lump ? fmt0(lump) : "–", "num", lump ? "" : " c-none") : ""}${td("คงเหลือ", fmt0(ch[ch.length - 1].bal), "num", " c-key")}</tr>`;
       });
     } else {
-      h = `<thead><tr><th class="l">งวด</th><th class="l">เดือน</th><th>ค่างวด</th><th>ดอกเบี้ย</th><th>ตัดเงินต้น</th><th>โปะก้อน</th><th>คงเหลือ</th><th>ดอกเบี้ย %</th></tr></thead><tbody>`;
+      h = `<thead><tr><th class="l">งวด</th><th class="l">เดือน</th><th>ค่างวด</th><th>ดอกเบี้ย</th><th>ตัดเงินต้น</th>${hasLump ? "<th>โปะก้อน</th>" : ""}<th>คงเหลือ</th><th>อัตรา</th></tr></thead><tbody>`;
       rows.forEach(r => {
-        h += `<tr class="${r.lump ? "lumprow" : ""}"><td class="l c-head" data-label="งวด">งวด ${r.n}</td><td class="l c-sub" data-label="เดือน">${monthLabel(r.date)}</td>
-          ${td("ค่างวด", fmt(r.payment))}${td("ดอกเบี้ย", fmt(r.interest))}${td("ตัดเงินต้น", fmt(r.principal))}
-          ${td("โปะก้อน", r.lump ? fmt(r.lump) : "–", "num", r.lump ? "" : " c-none")}${td("คงเหลือ", fmt(r.bal), "num", " c-key")}${td("ดอกเบี้ย", r.rate.toFixed(2) + "%")}</tr>`;
+        h += `<tr class="${r.lump ? "lumprow" : ""}"><td class="l c-head" data-label="งวด">${r.n}</td><td class="l c-sub" data-label="เดือน">${ym2(r.date)}</td>
+          ${td("ค่างวด", fmt0(r.payment))}${td("ดอกเบี้ย", fmt0(r.interest))}${td("ตัดเงินต้น", fmt0(r.principal))}
+          ${hasLump ? td("โปะก้อน", r.lump ? fmt0(r.lump) : "–", "num", r.lump ? "" : " c-none") : ""}${td("คงเหลือ", fmt0(r.bal), "num", " c-key")}${td("อัตรา", r.rate.toFixed(2) + "%")}</tr>`;
       });
     }
     if (!rows.length) h += `<tr><td class="empty" colspan="8">ไม่มีงวดในช่วงที่เลือก</td></tr>`;
