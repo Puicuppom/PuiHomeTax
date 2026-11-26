@@ -352,3 +352,13 @@ th,td{padding:10px 12px}
 .save .small,.save .big{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media (max-width:640px){#schedule td.c-head::before{content:"งวด ";color:inherit;font-size:inherit}
   #schedule td.c-head[data-label="ปี"]::before{content:none}}
+/* ใช้ความกว้างเต็มจอ */
+.appbar-in,.page{max-width:none}
+@media (min-width:1024px){
+  .appbar-in{padding-left:max(32px,env(safe-area-inset-left));padding-right:max(32px,env(safe-area-inset-right))}
+  .page{padding-left:max(32px,env(safe-area-inset-left));padding-right:max(32px,env(safe-area-inset-right))}
+}
+@media (min-width:1440px){
+  .layout{grid-template-columns:minmax(380px,440px) minmax(0,1fr)}
+  .chartbox{height:340px}
+}
