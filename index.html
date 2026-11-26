@@ -4,58 +4,76 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>PuiHome&amp;Tax</title>
-  <meta name="theme-color" content="#4f5bd5">
+  <meta name="theme-color" content="#ffffff">
   <meta name="color-scheme" content="light">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="PuiHome&amp;Tax">
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=24">
-  <link rel="icon" type="image/svg+xml" href="icons/logo.svg?v=24">
-  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png?v=24">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=25">
+  <link rel="icon" type="image/svg+xml" href="icons/logo.svg?v=25">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png?v=25">
   <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/app.css?v=24">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css?v=25">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
 
 <!-- ============ LOGIN ============ -->
-<section id="loginView" class="login card" hidden>
-  <div class="brand">
-    <img src="icons/logo.svg?v=24" alt="" width="30" height="30" style="border-radius:50%"> PuiHome&amp;Tax
+<section id="loginView" class="login" hidden>
+  <div class="login-card">
+    <div class="login-brand">
+      <img src="icons/logo.svg?v=25" alt="" width="64" height="64">
+      <h1>PuiHome&amp;Tax</h1>
+      <p>ผ่อนบ้าน · ค่าเช่า · วางแผนภาษี</p>
+    </div>
+    <form id="loginForm" class="stack">
+      <div><label class="lbl" for="loginEmail">อีเมล</label><input type="email" id="loginEmail" autocomplete="username" required></div>
+      <div><label class="lbl" for="loginPass">รหัสผ่าน</label><input type="password" id="loginPass" autocomplete="current-password" required></div>
+      <button type="submit" class="btn-primary btn-block" id="loginBtn">เข้าสู่ระบบ</button>
+      <div class="msg err" id="loginMsg" role="alert"></div>
+      <p class="small muted center">ใช้บัญชีเดียวกับ PuiJod</p>
+    </form>
   </div>
-  <p class="muted small" style="margin:0">ผ่อนบ้าน · ค่าเช่า · วางแผนภาษี — เข้าสู่ระบบด้วยบัญชีเดียวกับ PuiJod</p>
-  <form id="loginForm" class="grid" style="grid-template-columns:1fr">
-    <div><label class="lbl" for="loginEmail">อีเมล</label><input type="email" id="loginEmail" autocomplete="username" required></div>
-    <div><label class="lbl" for="loginPass">รหัสผ่าน</label><input type="password" id="loginPass" autocomplete="current-password" required></div>
-    <button type="submit" class="btn-primary" id="loginBtn">เข้าสู่ระบบ</button>
-    <div class="msg err" id="loginMsg" role="alert"></div>
-  </form>
 </section>
 
 <!-- ============ APP ============ -->
-<div id="appView" class="wrap" hidden>
-  <header class="topbar">
-    <div class="brand">
-      <img src="icons/logo.svg?v=24" alt="" width="30" height="30" style="border-radius:50%"> PuiHome&amp;Tax
+<div id="appView" hidden>
+  <header class="appbar">
+    <div class="appbar-in">
+      <a class="brand" href="#loan" aria-label="PuiHome&amp;Tax หน้าแรก">
+        <img src="icons/logo.svg?v=25" alt="" width="36" height="36">
+        <span class="brand-text"><b>PuiHome&amp;Tax</b><small>ผ่อนบ้าน · ค่าเช่า · ภาษี</small></span>
+      </a>
+      <nav class="tabs" aria-label="เมนูหลัก">
+        <a href="#loan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg><span>ผ่อนบ้าน</span></a>
+        <a href="#income"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18"/><path d="M16 14.5h2"/><path d="M7 6V4.5A1.5 1.5 0 0 1 8.5 3h7A1.5 1.5 0 0 1 17 4.5V6"/></svg><span>เงินได้</span></a>
+        <a href="#rent"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9"/><path d="m17 6 2 2"/><path d="m15 8 1.5 1.5"/></svg><span>ค่าเช่า</span></a>
+        <a href="#deduct"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="m9 14 6-6"/><circle cx="9.5" cy="8.5" r="1"/><circle cx="14.5" cy="13.5" r="1"/></svg><span>ลดหย่อน</span></a>
+      </nav>
+      <div class="user">
+        <span class="muted small hide-sm" id="userEmail"></span>
+        <button class="icon-btn" id="logoutBtn" title="ออกจากระบบ" aria-label="ออกจากระบบ"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 17l-5-5 5-5"/><path d="M5 12h11"/></svg></button>
+      </div>
     </div>
-    <nav class="tabs" aria-label="เมนู">
-      <a href="#loan">ผ่อนบ้าน</a>
-      <a href="#income">เงินได้</a>
-      <a href="#rent">ค่าเช่า</a>
-      <a href="#deduct">ลดหย่อน</a>
-    </nav>
-    <div class="row small"><span class="muted hide-sm" id="userEmail"></span><button class="btn-link" id="logoutBtn">ออกจากระบบ</button></div>
   </header>
+
+  <div class="page">
   <div class="banner" id="appBanner" hidden></div>
 
   <!-- ---------- LOAN ---------- -->
-  <main id="loanView" class="wrap" hidden>
-    <section class="card">
-      <div class="spread"><h1>เครื่องคำนวณผ่อนบ้าน</h1><span class="small muted" id="loanSaveState"></span></div>
+  <main id="loanView" class="view" hidden>
+    <div class="pagehead">
+      <div><h1>ผ่อนบ้าน</h1><p class="sub">คำนวณระยะเวลา ดอกเบี้ย และเทียบผลของการโปะ</p></div>
+      <span class="save-state" id="loanSaveState"></span>
+    </div>
+    <div class="layout">
+      <aside class="col-side">
+        <section class="card">
+          <h2 class="card-title">ข้อมูลเงินกู้</h2>
       <div class="grid" style="margin-top:14px">
         <div><label class="lbl" for="loanAmount">ยอดเงินกู้คงเหลือ (บาท)</label><input type="text" id="loanAmount" inputmode="numeric" class="money num"></div>
         <div><label class="lbl" for="monthlyPayment">ค่างวดต่อเดือน (บาท)</label><input type="text" id="monthlyPayment" inputmode="numeric" class="money num"></div>
@@ -63,22 +81,21 @@
         <div><label class="lbl" for="startMonth">เริ่มงวดแรกเดือน</label><input type="month" id="startMonth"></div>
         <div><label class="lbl" for="birthDate">วันเกิด</label><input type="date" id="birthDate"></div>
       </div>
-    </section>
-
-    <section class="card">
-      <h2>อัตราดอกเบี้ยตามช่วงเวลา</h2>
-      <p class="small muted" style="margin:4px 0 0">นับเดือนจากงวดแรก เว้น "ถึงเดือน" ว่างไว้ = ตลอดไป</p>
+        </section>
+        <section class="card">
+          <h2 class="card-title">อัตราดอกเบี้ยตามช่วงเวลา</h2>
+      <p class="small muted" style="margin:2px 0 0">นับเดือนจากงวดแรก เว้น "ถึงเดือน" ว่างไว้ = ตลอดไป</p>
       <div id="tiers"></div>
       <button type="button" class="btn-ghost btn-sm" id="addTier">+ เพิ่มช่วงดอกเบี้ย</button>
-      <h2 style="margin-top:18px">โปะก้อน (ครั้งคราว)</h2>
+      <h2 class="card-title" style="margin-top:22px">โปะก้อน (ครั้งคราว)</h2>
       <p class="small muted" style="margin:4px 0 0">เช่น โบนัสปลายปี ใส่งวดที่จะโปะและจำนวนเงิน</p>
       <div id="lumps"></div>
       <button type="button" class="btn-ghost btn-sm" id="addLump">+ เพิ่มโปะก้อน</button>
-    </section>
-
-    <div class="msg err" id="loanErr" role="alert"></div>
-
-    <section id="loanResult" class="wrap" hidden>
+        </section>
+      </aside>
+      <div class="col-main">
+        <div class="msg err" id="loanErr" role="alert"></div>
+    <section id="loanResult" class="stack" hidden>
       <div class="savings" id="savings"></div>
       <section class="card cmpcard">
         <div class="tablebox cmpbox"><table class="cmp">
@@ -100,19 +117,23 @@
         <div class="tablebox"><table id="schedule"></table></div>
       </section>
     </section>
+      </div>
+    </div>
   </main>
 
   <!-- ---------- INCOME ---------- -->
-  <main id="incomeView" class="wrap" hidden>
-    <section class="spread">
-      <div><h1>เงินได้</h1><p class="muted small hide-sm" style="margin:2px 0 0">เงินเดือน โบนัส ค่าจ้าง · รวมกับค่าเช่าเพื่อประมาณการ ภ.ง.ด.90</p></div>
-      <div><label class="lbl" for="iYear">ปีภาษี</label><select id="iYear" class="yearSel"></select></div>
-    </section>
+  <main id="incomeView" class="view" hidden>
+    <div class="pagehead">
+      <div><h1>เงินได้</h1><p class="sub">ประมาณการเงินเดือนทั้งปี รวมกับค่าเช่าเพื่อวางแผน ภ.ง.ด.90</p></div>
+      <div class="actions"><label class="lbl" for="iYear">ปีภาษี</label><select id="iYear" class="yearSel"></select></div>
+    </div>
     <section class="forms taxsum"></section>
-    <section class="card">
-      <div class="spread"><h2>ประมาณการเงินได้ทั้งปี</h2><span class="small muted" id="eState"></span></div>
-      <p class="small muted hide-sm" style="margin:4px 0 0">กรอกยอดทั้งปีเพื่อวางแผนได้เลย ภาษีที่ถูกหักนับเป็นเครดิตภาษี ประกันสังคมนับเป็นลดหย่อนให้อัตโนมัติ</p>
-      <div class="grid" style="margin-top:12px">
+    <div class="layout">
+      <aside class="col-side">
+        <section class="card">
+          <div class="spread"><h2 class="card-title">ประมาณการทั้งปี</h2><span class="save-state" id="eState"></span></div>
+          <p class="small muted hide-sm" style="margin:2px 0 0">ภาษีที่ถูกหักนับเป็นเครดิตภาษี · ประกันสังคมนับเป็นลดหย่อนให้อัตโนมัติ</p>
+      <div class="grid g1" style="margin-top:14px">
         <div><label class="lbl" for="eSalary">เงินเดือน+โบนัส ทั้งปี</label><input type="text" inputmode="numeric" id="eSalary" class="num money"></div>
         <div><label class="lbl" for="eWht">ภาษีถูกหักทั้งปี</label><input type="text" inputmode="numeric" id="eWht" class="num money" placeholder="ดูจากสลิป × 12"></div>
         <div><label class="lbl" for="eSso">ประกันสังคมทั้งปี</label><input type="text" inputmode="numeric" id="eSso" class="num money" placeholder="ดูจากสลิป × 12"></div>
@@ -126,23 +147,27 @@
         </div>
         <div class="row" style="margin-top:10px"><button type="button" class="btn-ghost btn-sm" id="eFill">ใส่ยอดทั้งปี (× 12)</button></div>
       </details>
-    </section>
-    
-    <section class="card"><h2>สรุปเงินได้ทั้งปี</h2><dl class="kv" id="iSummary"></dl></section>
-    
+        </section>
+      </aside>
+      <div class="col-main">
+        <section class="card"><h2 class="card-title">สรุปเงินได้ทั้งปี</h2><dl class="kv" id="iSummary"></dl></section>
+      </div>
+    </div>
   </main>
 
   <!-- ---------- DEDUCT ---------- -->
-  <main id="deductView" class="wrap" hidden>
-    <section class="spread">
-      <div><h1>ลดหย่อน</h1><p class="muted small hide-sm" style="margin:2px 0 0">รวมได้ <b class="num" id="dTotal">0.00</b> บาท · ใช้ทั้ง ภ.ง.ด.94 (ครึ่งหนึ่งของส่วนตัว/ครอบครัว) และ ภ.ง.ด.90</p></div>
-      <div><label class="lbl" for="dYear">ปีภาษี</label><select id="dYear" class="yearSel"></select></div>
-    </section>
+  <main id="deductView" class="view" hidden>
+    <div class="pagehead">
+      <div><h1>ลดหย่อน</h1><p class="sub">รวมหักได้ <b class="num" id="dTotal">0.00</b> บาท · ใช้ทั้ง ภ.ง.ด.94 และ ภ.ง.ด.90</p></div>
+      <div class="actions"><label class="lbl" for="dYear">ปีภาษี</label><select id="dYear" class="yearSel"></select></div>
+    </div>
     <section class="forms taxsum"></section>
-    <section class="card">
-      <div class="spread"><h2 id="dFormTitle">เพิ่มรายการลดหย่อน</h2><button type="button" class="btn-ghost btn-sm" id="dLoan" title="คำนวณดอกเบี้ยปีนี้จากแผนในหน้าผ่อนบ้าน">ดึงดอกเบี้ยบ้าน</button></div>
+    <div class="layout">
+      <aside class="col-side">
+        <section class="card">
+          <div class="spread"><h2 class="card-title" id="dFormTitle">เพิ่มรายการลดหย่อน</h2><button type="button" class="btn-ghost btn-sm" id="dLoan" title="คำนวณดอกเบี้ยปีนี้จากแผนในหน้าผ่อนบ้าน">ดึงดอกเบี้ยบ้าน</button></div>
       <form id="dForm" autocomplete="off">
-        <div class="grid" style="margin-top:12px">
+        <div class="grid g1" style="margin-top:14px">
           <div><label class="lbl" for="dCat">ประเภท</label><select id="dCat"></select></div>
           <div><label class="lbl" for="dAmount">จำนวนเงินที่จ่าย / สิทธิ์</label><input type="number" id="dAmount" min="0" step="0.01" inputmode="decimal" required></div>
           <div><label class="lbl" for="dLabel">รายละเอียด</label><input id="dLabel" placeholder="เช่น ชื่อบุตร, บริษัทประกัน, ชื่อกองทุน"></div>
@@ -155,33 +180,35 @@
           <span class="msg" id="dMsg" role="status"></span>
         </div>
       </form>
-    </section>
-    <section class="card">
-      <h2>รายการลดหย่อน</h2>
-      <p class="small muted" id="dEmpty" style="margin:6px 0 0" hidden>ยังไม่มีรายการ นอกจากลดหย่อนส่วนตัว 60,000 ที่ได้อัตโนมัติ</p>
+        </section>
+      </aside>
+      <div class="col-main">
+        <section class="card">
+          <h2 class="card-title">รายการลดหย่อน</h2>
+          <p class="small muted" id="dEmpty" style="margin:6px 0 0" hidden>ยังไม่มีรายการ นอกจากลดหย่อนส่วนตัว 60,000 ที่ได้อัตโนมัติ</p>
       <div class="tablebox"><table id="dedTbl">
         <thead><tr><th class="l">รายการ</th><th class="l">เงื่อนไข / หมายเหตุ</th><th>ยอดที่กรอก</th><th>หักได้จริง</th><th></th></tr></thead>
         <tbody id="dBody"></tbody></table></div>
-      <p class="small muted">⚠ = เกินเพดาน หักได้เท่าที่แสดง<span class="hide-sm"> · เพดานบางรายการเปลี่ยนทุกปี (เช่น ประกันสังคม ช้อปลดหย่อน Thai ESG) ตรวจประกาศกรมสรรพากรของปีนั้น</span></p>
-    </section>
+          <p class="small muted note">⚠ = เกินเพดาน หักได้เท่าที่แสดง<span class="hide-sm"> · เพดานบางรายการเปลี่ยนทุกปี (เช่น ประกันสังคม ช้อปลดหย่อน Thai ESG) ตรวจประกาศกรมสรรพากรของปีนั้น</span></p>
+        </section>
+      </div>
+    </div>
   </main>
 
   <!-- ---------- RENT ---------- -->
-  <main id="rentView" class="wrap" hidden>
-    <section class="spread">
-      <div><h1>สมุดค่าเช่าบ้าน</h1>
-        <p class="muted small hide-sm" style="margin:2px 0 0">เงินได้มาตรา 40(5) · ครึ่งปีแรก → ภ.ง.ด.94 · ทั้งปี → ภ.ง.ด.90</p></div>
-      <div class="row">
+  <main id="rentView" class="view" hidden>
+    <div class="pagehead">
+      <div><h1>สมุดค่าเช่า</h1><p class="sub">เงินได้ 40(5) · ครึ่งปีแรก → ภ.ง.ด.94 · ทั้งปี → ภ.ง.ด.90</p></div>
+      <div class="actions">
         <div><label class="lbl" for="rYear">ปีภาษี</label><select id="rYear" class="yearSel"></select></div>
-        <div><label class="lbl">&nbsp;</label><button class="btn-ghost" id="rExport">ส่งออก CSV</button></div>
+        <button class="btn-ghost" id="rExport">ส่งออก CSV</button>
       </div>
-    </section>
-
+    </div>
     <section class="forms taxsum"></section>
-
-
-    <section class="card">
-      <div class="spread"><h2 id="rFormTitle">บันทึกการรับเงิน</h2><button type="button" class="btn-ghost btn-sm" id="rCopyLast" title="ใช้ข้อมูลรายการล่าสุด (ของบ้านที่เลือก) เป็นเดือนถัดไป">คัดลอกรายการล่าสุด</button></div>
+    <div class="layout">
+      <aside class="col-side">
+        <section class="card">
+          <div class="spread"><h2 class="card-title" id="rFormTitle">บันทึกการรับเงิน</h2><button type="button" class="btn-ghost btn-sm" id="rCopyLast" title="ใช้ข้อมูลรายการล่าสุด (ของบ้านที่เลือก) เป็นเดือนถัดไป">คัดลอกล่าสุด</button></div>
       <form id="rForm" autocomplete="off">
         <div class="grid" style="margin-top:12px">
           <div><label class="lbl" for="fDate">วันที่ได้รับเงิน</label><input type="date" id="fDate" required></div>
@@ -199,23 +226,8 @@
           <span class="msg" id="rMsg" role="status"></span>
         </div>
       </form>
-    </section>
-
-    <section class="card">
-      <div class="spread"><h2>รายการรับเงิน <span class="small muted num" id="rCount"></span></h2>
-        <div style="min-width:190px"><label class="lbl" for="rFilter">กรองตามบ้าน</label><select id="rFilter"></select></div></div>
-      <div class="tablebox"><table id="rentTbl">
-        <thead><tr><th class="l">วันที่รับ</th><th class="l">บ้าน / ผู้เช่า</th><th class="l">ค่าเช่าเดือน</th><th>จำนวนเงิน</th><th>หัก ณ ที่จ่าย</th><th class="l">หมายเหตุ</th><th></th></tr></thead>
-        <tbody id="rBody"></tbody></table></div>
-    </section>
-
-    <section class="card">
-      <div class="spread"><h2>รายรับแต่ละเดือน</h2><span class="small muted">นับตามวันที่ได้รับเงินจริง</span></div>
-      <div class="months" id="rMonths"></div>
-      <div class="halves"><span>ม.ค.–มิ.ย. → ภ.ง.ด.94</span><span>ก.ค.–ธ.ค. → รวมใน ภ.ง.ด.90</span></div>
-    </section>
-
-    <section class="card">
+        </section>
+        <section class="card">
       <details id="rentSettings">
         <summary>ตั้งค่าค่าใช้จ่ายค่าเช่าของปีนี้</summary>
         <div class="grid" style="margin-top:12px">
@@ -227,26 +239,42 @@
         </div>
         <p class="small muted">เงินเดือนและลดหย่อนย้ายไปอยู่ในแท็บ <a href="#income">เงินได้</a> และ <a href="#deduct">ลดหย่อน</a> <span id="sState"></span></p>
       </details>
-    </section>
-
-    <footer>ภาษีเป็นค่าประมาณจากค่าเช่าในสมุดนี้เท่านั้น ถ้ามีเงินได้อื่นยอดจริงจะต่าง · อัตราก้าวหน้า (150,000 แรกยกเว้น) และเทียบวิธี 0.5% เมื่อเงินได้ตั้งแต่ 120,000 บาท ตามคู่มือกรมสรรพากร</footer>
+        </section>
+      </aside>
+      <div class="col-main">
+        <section class="card">
+          <div class="spread"><h2 class="card-title">รายการรับเงิน <span class="small muted num" id="rCount"></span></h2>
+            <div class="filter"><label class="lbl" for="rFilter">กรองตามบ้าน</label><select id="rFilter"></select></div></div>
+      <div class="tablebox"><table id="rentTbl">
+        <thead><tr><th class="l">วันที่รับ</th><th class="l">บ้าน / ผู้เช่า</th><th class="l">ค่าเช่าเดือน</th><th>จำนวนเงิน</th><th>หัก ณ ที่จ่าย</th><th class="l">หมายเหตุ</th><th></th></tr></thead>
+        <tbody id="rBody"></tbody></table></div>
+        </section>
+        <section class="card">
+          <div class="spread"><h2 class="card-title">รายรับแต่ละเดือน</h2><span class="small muted">นับตามวันที่ได้รับเงินจริง</span></div>
+          <div class="months" id="rMonths"></div>
+          <div class="halves"><span>ม.ค.–มิ.ย. → ภ.ง.ด.94</span><span>ก.ค.–ธ.ค. → รวมใน ภ.ง.ด.90</span></div>
+        </section>
+      </div>
+    </div>
+    <footer class="foot">ภาษีเป็นค่าประมาณ · อัตราก้าวหน้า (150,000 แรกยกเว้น) และเทียบวิธี 0.5% เมื่อเงินได้ตั้งแต่ 120,000 บาท ตามคู่มือกรมสรรพากร</footer>
   </main>
+  </div>
 </div>
 
 <!-- ============ INSTALL ============ -->
 <div id="installBar" class="installbar" role="dialog" aria-label="ติดตั้งแอป" hidden>
-  <img src="icons/icon-192.png?v=24" alt="" width="44" height="44">
+  <img src="icons/icon-192.png?v=25" alt="" width="44" height="44">
   <div class="ib-text"><b>ติดตั้ง PuiHome&amp;Tax</b><span class="small muted" id="ibHint">เปิดเร็วจากหน้าจอหลัก ใช้งานเหมือนแอป</span></div>
   <button type="button" class="btn-primary btn-sm" id="ibInstall">ติดตั้ง</button>
   <button type="button" class="btn-link" id="ibClose" aria-label="ปิด">✕</button>
 </div>
 
-<script src="js/core.js?v=24"></script>
-<script src="js/tax.js?v=24"></script>
-<script src="js/loan.js?v=24"></script>
-<script src="js/income.js?v=24"></script>
-<script src="js/rent.js?v=24"></script>
-<script src="js/deduct.js?v=24"></script>
+<script src="js/core.js?v=25"></script>
+<script src="js/tax.js?v=25"></script>
+<script src="js/loan.js?v=25"></script>
+<script src="js/income.js?v=25"></script>
+<script src="js/rent.js?v=25"></script>
+<script src="js/deduct.js?v=25"></script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(() => {}));

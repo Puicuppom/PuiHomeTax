@@ -140,7 +140,7 @@ ${leftCard}`;
       { label: "ผ่อน + โปะ", data: p, borderColor: css("--primary"), backgroundColor: css("--primary-soft"), fill: true, borderWidth: 2.5, pointRadius: 0, tension: .1 }
     ]};
     const opts = { responsive: true, maintainAspectRatio: false, interaction: { mode: "index", intersect: false }, animation: false,
-      plugins: { legend: { labels: { color: ink, font: { family: "Sarabun" } } },
+      plugins: { legend: { labels: { color: ink, font: { family: "IBM Plex Sans Thai" } } },
         tooltip: { callbacks: { title: it => { const n = Number(it[0].label); return `งวดที่ ${n} · ${monthLabel(addMonths(read().startMonth, n - 1))}`; },
                                 label: c => `${c.dataset.label}: ${fmt0(c.parsed.y)} บาท` } } },
       scales: { x: { ticks: { color: ink, maxTicksLimit: 10, callback: (v, i) => { const n = labels[i]; return n % 12 === 1 || step > 1 ? `ปีที่ ${Math.ceil(n / 12)}` : ""; } }, grid: { display: false } },
